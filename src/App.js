@@ -126,7 +126,7 @@ export const server = req => {
     return loadInitialProps({ req, serverSideRendering: true, store })
       .then(initialProps => {
         const _loadInitialData = loadInitialData({ req, serverSideRendering: true, store})
-        return (_loadInitialData && _loadInitialData.then(initialData => ({ initialProps, initialData }))) || Promise.resolve(null)
+        return (_loadInitialData && _loadInitialData.then(initialData => ({ initialProps, initialData }))) || { initialProps }
 
       }).then(({ initialProps, initialData }) => {
         const CreatedApp = createApp(store, initialProps)
