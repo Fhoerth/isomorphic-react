@@ -9,7 +9,7 @@ const server = {
   devtool: 'inline-source-map',
   externals: [nodeExternals()],
   entry: [
-    path.join(__dirname, '..', 'src', 'App.js'),
+    path.join(__dirname, '..', 'src', 'app', 'index.js'),
   ],
   output: {
     filename: path.join('js', 'server.js'),
@@ -18,9 +18,11 @@ const server = {
     libraryTarget: 'commonjs2'
   },
   module: {
-    loaders: [{
+    rules: [{
       test: /\.(js|jsx)$/,
-      loaders: ['babel-loader']
+      use: {
+        loader: 'babel-loader'
+      }
     }]
   },
   plugins: [

@@ -122,7 +122,7 @@ appMediator.once('ready', () => {
   })
 
   app.get('*', (req, res, next) => {
-    getServerApp(res).server(req).then(({ App, store, initialProps }) => {
+    getServerApp(res).getServerAppContext(req).then(({ App, store, initialProps }) => {
       const initialData = {
         props: initialProps,
         state: store.getState()

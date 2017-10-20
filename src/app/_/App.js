@@ -52,24 +52,54 @@ export class RouterLoader extends React.Component {
 
 export const RouterLoaderWithRouter = withRouter(RouterLoader)
 
-export const createApp = (store, initialProps = {}) => () => {
-  const BaseComponent = () => (
-    <div key='main'>
-      <RouterLoaderWithRouter store={store} initialProps={initialProps} routes={routes} />
-    </div>
-  )
+// export function createApp (store, initialProps = {}) {
+//   console.log('STORE', 'INITIALPROPS');
+//   if (store.history) {
+//     return (
+//       <ConnectedRouter history={store.history} key='connected-router'>
+//         <RouterLoaderWithRouter store={store} initialProps={initialProps} routes={routes} />
+//       </ConnectedRouter>
+//     )
+//   } else {
+//     console.log('EYEYEYEYEY');
+//     return (
+//       <div key='main'>
+//         <RouterLoaderWithRouter store={store} initialProps={initialProps} routes={routes} />
+//       </div>
+//     )
+//   }
+// }
 
+export function ClientApp ({ store, initialProps = {} }) {
   return (
-    <Provider key='provider' store={store}>
-      {store.history ? (
-        <ConnectedRouter history={store.history} key='connected-router'>
-          <BaseComponent />
-        </ConnectedRouter>
-      ) : (
-        <BaseComponent />
-      )}
-    </Provider>
+    <ConnectedRouter history={store.history} key='connected-router'>
+      <div key='main'>
+        <RouterLoaderWithRouter store={store} initialProps={initialProps} routes={routes} />
+      </div>
+    </ConnectedRouter>
   )
+}
+
+export function createApp (store, initialProps = {}) {
+  return function () {
+    if (store.history) {
+      return (
+        <ConnectedRouter history={store.history} key='connected-router'>
+          <div key='main'>
+            <RouterLoaderWithRouter store={store} initialProps={initialProps} routes={routes} />
+          </div>
+        </ConnectedRouter>
+      )
+    } else {
+      return (
+        <Provider key='provider' store={store}>
+          <div key='main'>
+            <RouterLoaderWithRouter store={store} initialProps={initialProps} routes={routes} />
+          </div>
+        </Provider>
+      )
+    }
+  }
 }
 
 export const loadInitialProps = ({ req = null, location = null, isServer = false, store }) => {
@@ -108,7 +138,7 @@ export const client = () => {
 
     // Load initial props from window
     const initialProps = (window.__INITIAL_DATA__ && window.__INITIAL_DATA__.props) || {}
-    clientApp = createApp(clientStore, initialProps)
+    clientApp = createClientApp(clientStore, initialProps)
   }
 
   return clientApp
