@@ -7,19 +7,53 @@ module.exports = (config, isProd) => {
       filename: path.join('styles', 'styles.[hash].css')
     })
 
-    config.module.loaders.push({
-      test: [/\.s(a|c)ss$/, /\.css$/],
+    config.module.rules.push({
+      test: [/\.s(a|c)ss$/],
       use: extractCSS.extract({
-        use: ['css-loader?modules&camelCase=true&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]', 'autoprefixer-loader', 'sass-loader'],
+        use: [{
+          loader: 'css-loader',
+          options: {
+            minimize: true,
+            modules: true,
+            camelCase: true,
+            importLoaders: 1,
+            localIdentName: '[name]__[local]___[hash:base64:5]'
+          }
+        }, {
+          loader: 'autoprefixer-loader',
+        }, {
+          loader: 'sass-loader',
+          options: {
+            includePaths: ['node_modules']
+          }
+        }],
         publicPath: path.resolve(__dirname, '..', 'build')
       })
     })
 
     config.plugins.push(extractCSS)
   } else {
-    config.module.loaders.push({
+    config.module.rules.push({
       test: [/\.s(a|c)ss$/, /\.css$/],
-      loader: 'style-loader!css-loader?modules&camelCase=true&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!autoprefixer-loader!sass-loader'
+      use: [{
+        loader: 'style-loader'
+      }, {
+        loader: 'css-loader',
+        options: {
+          modules: true,
+          camelCase: true,
+          importLoaders: 1,
+          localIdentName: '[name]__[local]___[hash:base64:5]'
+        }
+      }, {
+        loader: 'autoprefixer-loader'
+      }, {
+        loader: 'sass-loader',
+        options: {
+          includePaths: ['node_modules']
+        }
+      }]
+
     })
   }
 

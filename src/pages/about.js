@@ -2,9 +2,13 @@ import React from 'react'
 
 class About extends React.Component {
   static loadInitialProps ({ req, store }) {
-    return Promise.resolve({
-      title: 'About Page',
-      isServer: !!req
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          title: 'About Page',
+          isServer: !!req
+        })
+      }, 500)
     })
   }
 

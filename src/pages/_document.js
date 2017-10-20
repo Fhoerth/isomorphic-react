@@ -4,6 +4,7 @@ import { renderRoutes } from 'react-router-config'
 import Nav from '../components/Nav'
 import RouterLoader from '../components/RouterLoader'
 import styles from '../styles/_document.styles.sass'
+import '../styles/global.scss'
 
 class Document extends React.Component {
   render () {
@@ -14,7 +15,7 @@ class Document extends React.Component {
           Header Component
         </header>
         <main className={styles.main}>
-          {renderRoutes(this.props.route.routes, this.props)}
+          {renderRoutes(this.props.route.routes, { ...this.props })}
         </main>
         <footer className={styles.footer}>
           Footer Component

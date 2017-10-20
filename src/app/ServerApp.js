@@ -5,8 +5,8 @@ import { BrowserRouter } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
 import routes from '../config/routes'
-import configureStore from '../store/configureStore'
 import RouterLoader from './RouterLoader'
+import configureStore from '../store/configureStore'
 
 class ServerApp extends React.Component {
   render () {

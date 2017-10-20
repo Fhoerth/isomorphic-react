@@ -1,5 +1,5 @@
 import React from 'react'
-import Route from 'react-router/Route'
+import Route from './Route'
 import { withRouter } from 'react-router'
 import { BrowserRouter } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
@@ -17,35 +17,43 @@ class RouterLoader extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    const navigated = nextProps.location !== this.props.location
+    const navigated = nextProps.location.pathname !== this.props.location.pathname
     const { store, routes } = this.props
 
     if (navigated) {
       this.setState({
+        loadingRoute: true,
         previousLocation: this.props.location
       })
 
       const { location } = nextProps
       return loadInitialProps({ store, location, routes }).then(initialProps => {
-        // return loadInitialData({ store, location, routes }).then(() => {
-          this.setState({
-            previousLocation: null,
-            initialProps
-          })
-        // })
+        this.setState({
+          loadingRoute: false,
+          previousLocation: null,
+          initialProps
+        })
+      }).catch(() => {
+        this.setState({
+          loadingRoute: false
+        })
       })
     }
   }
 
   render () {
     const { routes, children, location } = this.props
-    const { previousLocation } = this.state
+    const { previousLocation, loadingRoute } = this.state
 
     return (
-      <Route
-        location={previousLocation || location}
-        render={() => renderRoutes(routes, this.state.initialProps)}
-      />
+      <div key='route'>
+        <Route
+          loadingRoute={loadingRoute}
+          previousLocation={previousLocation}
+          location={previousLocation || location}
+          render={() => renderRoutes(routes, { ...this.state.initialProps, loadingRoute })}
+        />
+      </div>
     )
   }
 }

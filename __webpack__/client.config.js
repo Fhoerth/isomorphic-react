@@ -34,7 +34,8 @@ const dev = {
     publicPath: '/'
   },
   module: {
-    loaders: [babelLoader]
+    loaders: [],
+    rules: [babelLoader]
   },
   plugins: [
     htmlWebpackPlugin,
@@ -58,7 +59,8 @@ const prod = {
     publicPath: '/'
   },
   module: {
-    loaders: [babelLoader]
+    loaders: [],
+    rules: [babelLoader]
   },
   plugins: [
     htmlWebpackPlugin,

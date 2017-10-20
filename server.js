@@ -17,7 +17,7 @@ function handleRequireError (e, message) {
   if (e.message.includes('Cannot find')) {
     console.warn(message)
   } else {
-    throw e
+    console.log(e);
   }
 }
 
