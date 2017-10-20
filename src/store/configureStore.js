@@ -11,7 +11,7 @@ export default (preloadedState = initialState) => {
   const store = createStore(combineReducers({ ...rootReducer, router: routerReducer }), preloadedState, applyMiddleware(thunk))
 
   // Redux HMR
-  if (!process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     if (module.hot) {
       module.hot.accept('./rootReducer', () => store.replaceReducer(require('./rootReducer').default))
     }
