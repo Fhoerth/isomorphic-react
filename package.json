@@ -30,10 +30,12 @@
     "serialize-javascript": "^1.4.0",
     "style-loader": "^0.18.2",
     "webpack-dev-server": "^2.7.1",
+    "webpack-hot-server-middleware": "^0.2.0",
     "webpack-isomorphic-compiler": "^1.1.0",
     "webpack-isomorphic-dev-middleware": "^1.1.2",
     "webpack-node-externals": "^1.6.0",
-    "webpack-source-map-support": "^2.0.1"
+    "webpack-source-map-support": "^2.0.1",
+    "webpack-stats-plugin": "^0.1.5"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -46,13 +48,13 @@
     "babel-preset-stage-0": "^6.24.1",
     "history": "^4.7.2",
     "prop-types": "^15.5.10",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "react-hot-loader": "^3.0.0-beta.7",
+    "react": "^16.1.0-beta",
+    "react-dom": "^16.1.0-beta",
+    "react-hot-loader": "^3.1.1",
     "react-router-redux": "^5.0.0-alpha.6",
     "webpack": "^3.5.5",
     "webpack-dev-middleware": "^1.12.0",
-    "webpack-hot-middleware": "^2.18.2"
+    "webpack-hot-middleware": "^2.20.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
