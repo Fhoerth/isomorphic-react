@@ -5,16 +5,24 @@ import createHistory from 'history/createBrowserHistory'
 
 import rootReducer from './rootReducer'
 
+const isProduction = process.env.NODE_ENV === 'production'
+
+function getReducers (rootReducer) {
+  return { ...rootReducer, router: routerReducer }
+}
+
 export const initialState = {}
 
 export default (preloadedState = initialState) => {
-  const store = createStore(combineReducers({ ...rootReducer, router: routerReducer }), preloadedState, applyMiddleware(thunk))
+  const store = createStore(combineReducers(getReducers(rootReducer)), preloadedState, applyMiddleware(thunk))
 
   // Redux HMR
-  if (process.env.NODE_ENV !== 'production') {
-    if (module.hot) {
-      module.hot.accept('./rootReducer', () => store.replaceReducer(require('./rootReducer').default))
-    }
+  if (!isProduction && module.hot) {
+    module.hot.accept('./rootReducer', () => store.replaceReducer(
+      combineReducers(
+        getReducers(require('./rootReducer').default))
+      )
+    )
   }
 
   return Object.assign(store, {
