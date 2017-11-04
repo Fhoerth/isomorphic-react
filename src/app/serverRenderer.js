@@ -22,7 +22,7 @@ function replaceWebpackLinkRelExternals (template, styles) {
 }
 
 function replaceWebpackScriptExternals (template, scripts = []) {
-  return template.replace('{{__WEBPACK_SCRIPT_EXTERNALS__}}', scripts.filter(s => s.includes('.js').map(script => {
+  return template.replace('{{__WEBPACK_SCRIPT_EXTERNALS__}}', scripts.filter(s => s.includes('.js')).map(script => {
     return flatten([script]).map(subScript => {
       return `<script type="text/javascript" src="/${subScript}"></script>`
     })
