@@ -9,11 +9,11 @@ import BrowserApp from './app/BrowserApp'
 const rootEl = document.getElementById('root')
 
 if (process.env.NODE_ENV === 'production') {
-  ReactDOM.render((
+  ReactDOM.hydrate((
   <BrowserApp />
   ), rootEl)
 } else {
-  const renderDevApp = App => ReactDOM.render((
+  const renderDevApp = App => ReactDOM.hydrate((
     <AppContainer>
       <App />
     </AppContainer>
