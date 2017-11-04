@@ -35,7 +35,7 @@ function replaceWebpackInlinedCss (template, css = []) {
   }).join("\n"))
 }
 
-function replaceWebpackInitialData (template, initialData = {}) {-
+function replaceWebpackInitialData (template, initialData = {}) {
   return template.replace('{{__INITIAL_DATA__}}', serialize(initialData))
 }
 
