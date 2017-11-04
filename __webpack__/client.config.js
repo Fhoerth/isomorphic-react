@@ -1,16 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const nodeExternals = require('webpack-node-externals')
-
-const htmlWebpackPlugin = new HtmlWebpackPlugin({
-  filename: '__ssr-template__.html',
-  // minify: {
-  //   collapseInlineTagWhitespace: true,
-  //   collapseWhitespace: true
-  // },
-  template: '!!ejs-loader!' + path.join(__dirname, '..', 'public', 'index.html')
-})
 
 const babelLoader = {
   test: /\.(js|jsx)$/,
@@ -19,10 +9,13 @@ const babelLoader = {
 }
 
 const dev = {
+  name: 'client',
+  target: 'web',
   entry: {
     app: [
       'react-hot-loader/patch',
       'webpack-hot-middleware/client?reload=true',
+      'webpack/hot/only-dev-server',
       path.join(__dirname, '..', 'src', 'index.js'),
     ],
     vendor: ['react', 'react-dom', 'redux', 'react-router']
@@ -38,7 +31,6 @@ const dev = {
     rules: [babelLoader]
   },
   plugins: [
-    htmlWebpackPlugin,
     new webpack.HotModuleReplacementPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
@@ -63,7 +55,6 @@ const prod = {
     rules: [babelLoader]
   },
   plugins: [
-    htmlWebpackPlugin,
     new webpack.optimize.UglifyJsPlugin({
       compress: { warnings: false }
     }),
