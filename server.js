@@ -1,5 +1,8 @@
-const express = require('express')
+const fs = require('fs')
 const path = require('path')
+const rimraf = require('rimraf')
+const express = require('express')
+
 const app = express()
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -43,8 +46,10 @@ if (process.argv.indexOf('--build') !== -1) {
   const webpack = require('webpack')
   const compiler = webpack(config)
 
-  return compiler.run(function () {
-    console.log('⚙️⚙️ Compilation Finished ⚙️⚙️');
+  return rimraf(path.join(__dirname, 'build'), function () {
+    compiler.run(function () {
+      console.log('⚙️⚙️ Compilation Finished ⚙️⚙️');
+    })
   })
 }
 
@@ -63,7 +68,22 @@ app.get('/index-description', (req, res, next) => {
 
 
 if (isProduction) {
+  const BUILD_DIR = 'build'
 
+  const CLIENT_ASSETS_DIR = path.join(__dirname, BUILD_DIR)
+  const CLIENT_STATS_PATH = path.join(__dirname, BUILD_DIR, 'stats.json')
+  const SERVER_RENDERER_PATH = path.join(__dirname, BUILD_DIR, 'js', 'server.js')
+  const WEBPACK_PROCESSED_TEMPLATE = path.join(__dirname, BUILD_DIR, '__ssr-template__.html')
+
+  const webpackProcessedTemplate = fs.readFileSync(WEBPACK_PROCESSED_TEMPLATE, 'utf8')
+  const webpackAssets = {
+    processedTemplate: webpackProcessedTemplate
+  }
+  const serverRenderer = require(SERVER_RENDERER_PATH).default
+  const stats = require(CLIENT_STATS_PATH)
+
+  app.use(express.static(CLIENT_ASSETS_DIR));
+  app.use(serverRenderer(stats, webpackAssets))
 } else {
     let webpackAssets = {}
     const webpack = require('webpack')
