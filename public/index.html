@@ -6,16 +6,15 @@
     <meta name="theme-color" content="#000000">
     <link rel="manifest" href="/manifest.json">
     <link rel="shortcut icon" href="/favicon.ico">
+    {{__WEBPACK_LINK_REL_EXTERNALS__}}
+    {{__WEBPACK_INLINED_CSS__}}
     <title>React App</title>
   </head>
   <body>
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
     <div id="root">{{SSR}}</div>
     <script type="text/javascript">
       window.__INITIAL_DATA__ = {{__INITIAL_DATA__}};
     </script>
-    <% for (var chunk in htmlWebpackPlugin.options.externals) { %><script src="<%=htmlWebpackPlugin.options.externals[chunk] %>"></script><% } %>
+    {{__WEBPACK_SCRIPT_EXTERNALS__}}
   </body>
 </html>
