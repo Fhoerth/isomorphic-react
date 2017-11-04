@@ -1,7 +1,20 @@
 const path = require('path')
 const webpack = require('webpack')
 const nodeExternals = require('webpack-node-externals')
-var WebpackSourceMapSupport = require("webpack-source-map-support")
+const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+const htmlWebpackPlugin = new HtmlWebpackPlugin({
+  filename: '__ssr-template__.html',
+  minify: {
+    collapseInlineTagWhitespace: true,
+    collapseWhitespace: true
+  },
+  favicon: false,
+  excludeChunks: true,
+  chunks: [],
+  template: '!!ejs-loader!' + path.join(__dirname, '..', 'public', 'index.html')
+})
 
 const server = {
   name: 'server',
@@ -9,12 +22,12 @@ const server = {
   devtool: 'inline-source-map',
   externals: [nodeExternals()],
   entry: [
-    path.join(__dirname, '..', 'src', 'app', 'index.js'),
+    path.join(__dirname, '..', 'src', 'app', 'serverRenderer.js'),
   ],
   output: {
     filename: path.join('js', 'server.js'),
     path: path.resolve(__dirname, '..', 'build'),
-    publicPath: 'build/',
+    publicPath: 'build',
     libraryTarget: 'commonjs2'
   },
   module: {
@@ -26,6 +39,10 @@ const server = {
     }]
   },
   plugins: [
+    htmlWebpackPlugin,
+    new StatsWriterPlugin({
+      filename: 'stats.json' // Default
+    }),
     new webpack.BannerPlugin({
       banner: `require("source-map-support").install({
         hookRequire: true,
