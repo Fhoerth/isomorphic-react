@@ -80,7 +80,9 @@ if (isProduction) {
     processedTemplate: webpackProcessedTemplate
   }
   const serverRenderer = require(SERVER_RENDERER_PATH).default
-  const stats = require(CLIENT_STATS_PATH)
+  const stats = {
+    clientStats: require(CLIENT_STATS_PATH)
+  }
 
   app.use(express.static(CLIENT_ASSETS_DIR));
   app.use(serverRenderer(stats, webpackAssets))
