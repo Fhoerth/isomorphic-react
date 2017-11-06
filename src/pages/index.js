@@ -24,13 +24,13 @@ class Index extends React.Component {
     return (
       <container>
         <Button />
-        <h1>{this.props.title} (rendered { this.props.isServer ? ' from server!' : 'from client!' })</h1>
+        <h1>{this.props.title} (rendered { this.props.isServer ? ' from server!!' : 'from client :D :D!' })</h1>
         { this.props.loadingInitialData ? (
           <div>Loading Initial Data...</div>
         ) : (
           <div>
             <h3>Ping: {JSON.stringify(this.props.ping)}</h3>
-            <h5>Description: {this.props.description}</h5>
+            <h5>Description!!!!: {this.props.description}</h5>
           </div>
         )}
       </container>

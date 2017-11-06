@@ -4,11 +4,11 @@ import { withRouter } from 'react-router'
 import { BrowserRouter } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
 
-import loadInitialProps from './loadInitialProps'
+import bootstrapRoute from './bootstrapRoute'
 
 class RouterLoader extends React.Component {
-  constructor (props) {
-    super(props)
+  constructor (props, context) {
+    super(props, context)
     const { initialProps } = props
 
     this.state = {
@@ -18,16 +18,17 @@ class RouterLoader extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     const navigated = nextProps.location.pathname !== this.props.location.pathname
-    const { store, routes } = this.props
+    const { store, routes, webpackStats } = this.props
 
     if (navigated) {
+      const { location } = nextProps
+
       this.setState({
         loadingRoute: true,
         previousLocation: this.props.location
       })
 
-      const { location } = nextProps
-      return loadInitialProps({ store, location, routes }).then(initialProps => {
+      return bootstrapRoute({ store, location, routes, isServer: false, webpackStats }).then(({ initialProps }) => {
         this.setState({
           loadingRoute: false,
           previousLocation: null,

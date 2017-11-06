@@ -5,8 +5,8 @@ class RouterLoaderComponent extends React.Component {
   render () {
     return (
       <Route
-              render={() => children}
-            />
+        render={() => children}
+      />
     )
   }
 }

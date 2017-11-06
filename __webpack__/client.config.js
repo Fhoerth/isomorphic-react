@@ -1,6 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const nodeExternals = require('webpack-node-externals')
+const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 
 const babelLoader = {
   test: /\.(js|jsx)$/,
@@ -22,7 +23,8 @@ const dev = {
   },
   devtool: 'eval-source-map',
   output: {
-    filename: path.join('js', '[name].js'),
+    filename: path.join('js', '[name].[hash].js'),
+    chunkFilename: path.join('js', '[name].[hash].js'),
     path: path.resolve(__dirname, 'build'),
     publicPath: '/'
   },
@@ -31,6 +33,9 @@ const dev = {
     rules: [babelLoader]
   },
   plugins: [
+    new StatsWriterPlugin({
+      filename: 'stats.json' // Default
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
@@ -48,6 +53,7 @@ const prod = {
   output: {
     filename: path.join('js', '[name].[hash].js'),
     path: path.resolve('build'),
+    chunkFilename: path.join('js', '[name].[hash].js'),
     publicPath: '/'
   },
   module: {
@@ -55,8 +61,15 @@ const prod = {
     rules: [babelLoader]
   },
   plugins: [
+    new StatsWriterPlugin({
+      filename: 'stats.json' // Default
+    }),
     new webpack.optimize.UglifyJsPlugin({
       compress: { warnings: false }
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      filename: path.join('js', 'vendor.js')
     }),
     new webpack.DefinePlugin({
       'process.env': {

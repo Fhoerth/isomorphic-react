@@ -9,6 +9,16 @@ import Document from '../pages/_document'
 import Index from '../pages/index'
 import About from '../pages/about'
 
+import dynamicRoute from '../app/dynamicRoute'
+
+const Dynamic = dynamicRoute(() => import(
+  /* webpackChunkName: "dynamicPage" */
+  '../pages/dynamicPage'
+), {
+  weakResolved: require.resolveWeak('../pages/dynamicPage'),
+  chunkName: 'dynamicPage'
+})
+
 const routes = [{
   component: Document,
   routes: [{
@@ -19,7 +29,13 @@ const routes = [{
     path: '/about',
     exact: true,
     component: About
-  }]
+  }
+  , {
+    path: '/dynamic',
+    exact: true,
+    component: Dynamic
+  }
+  ]
 }]
 
 export default routes

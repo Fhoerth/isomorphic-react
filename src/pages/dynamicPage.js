@@ -1,22 +1,22 @@
 import React from 'react'
 
-class About extends React.Component {
+class DynamicPage extends React.Component {
   static loadInitialProps ({ req, store }) {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
-          title: 'About Page',
+          title: 'Dynamic Page',
           isServer: !!req
         })
-      }, 100)
+      }, 0)
     })
   }
 
   render () {
     return (
-      <h1>{this.props.title} (rendered { this.props.isServer ? ' from server' : 'from client' })</h1>
+      <h1>{this.props.title} (rendered { this.props.isServer ? ' from server!!xD' : 'from client!!!! xD' })</h1>
     )
   }
 }
 
-export default About
+export default DynamicPage

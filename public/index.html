@@ -11,9 +11,10 @@
     <title>React App</title>
   </head>
   <body>
-    <div id="root">{{SSR}}</div>
+    <div id="root">{{__SSR__}}</div>
     <script type="text/javascript">
       window.__INITIAL_DATA__ = {{__INITIAL_DATA__}};
+      window.__STATS__ = {{__STATS__}};
     </script>
     {{__WEBPACK_SCRIPT_EXTERNALS__}}
   </body>

@@ -8,7 +8,7 @@ import serialize from 'serialize-javascript'
 import { flatten } from 'ramda'
 
 import ServerApp from './ServerApp'
-import loadInitialProps from './loadInitialProps'
+import bootstrapRoute from './bootstrapRoute'
 
 import routes from '../config/routes'
 import configureStore from '../store/configureStore'
@@ -21,11 +21,15 @@ function replaceWebpackLinkRelExternals (template, styles) {
   }).join("\n"))
 }
 
+function replaceWebpackStats (template, stats) {
+  return template.replace('{{__STATS__}}', serialize(stats))
+}
+
 function replaceWebpackScriptExternals (template, scripts = []) {
   return template.replace('{{__WEBPACK_SCRIPT_EXTERNALS__}}', scripts.map(script => {
     return flatten([script]).filter(s => s.includes('.js')).map(subScript => {
       return `<script type="text/javascript" src="/${subScript}"></script>`
-    })
+    }).join('')
   }).join("\n"))
 }
 
@@ -40,14 +44,16 @@ function replaceWebpackInitialData (template, initialData = {}) {
 }
 
 function replaceServerSideRenderedApp (template, app = '') {
-  return template.replace('{{SSR}}', app)
+  return template.replace('{{__SSR__}}', app)
 }
 
 export default function serverRenderer (stats, webpackAssets = null) {
+
   return (req, res, next) => {
     const StaticRouter = require('react-router').StaticRouter
     return Promise.try(() => {
-      let template = (webpackAssets && webpackAssets.processedTemplate) || (res.webpackAssets && res.webpackAssets.processedTemplate)
+      // let importedModules = []
+      const template = (webpackAssets && webpackAssets.processedTemplate) || (res.webpackAssets && res.webpackAssets.processedTemplate)
 
       if (!template && !isProduction) {
         // When npm run dev command is executed and your enter the page, webpack will log in console
@@ -62,14 +68,14 @@ export default function serverRenderer (stats, webpackAssets = null) {
               <meta charset="utf-8">
               <title>Reloading Webpack...</title>
               <script type="text/javascript">
-                function refreshBrowser () {
+                function refreshPage () {
                   window.location.reload()
                 }
 
                 if(window.addEventListener){
-                  window.addEventListener('load', refreshBrowser)
+                  window.addEventListener('load', refreshPage)
                 }else{
-                  window.attachEvent('onload', refreshBrowser)
+                  window.attachEvent('onload', refreshPage)
                 }
               </script>
             </head>
@@ -85,8 +91,12 @@ export default function serverRenderer (stats, webpackAssets = null) {
       const context = {}
       const location = req.url
 
-      return loadInitialProps({ req, serverSideRendering: true, store, routes })
-        .then(initialProps => {
+      return bootstrapRoute({ req, isServer: true, store, routes })
+        .then(({ initialProps, isDynamic, chunkName }) => {
+          // if (isDynamic) {
+          //   importedModules = [chunkName]
+          // }
+
           function ServerAppWithRouter () {
             return (
               <StaticRouter location={location} context={context}>
@@ -95,20 +105,26 @@ export default function serverRenderer (stats, webpackAssets = null) {
             )
           }
 
-          template = replaceServerSideRenderedApp(template, ReactDOMServer.renderToString(<ServerAppWithRouter />))
-          template = replaceWebpackScriptExternals(template, [
+          let _template = template
+          _template = replaceServerSideRenderedApp(_template, ReactDOMServer.renderToString(<ServerAppWithRouter />))
+          _template = replaceWebpackScriptExternals(_template, [
             stats.clientStats.assetsByChunkName.vendor,
-            stats.clientStats.assetsByChunkName.app
+            // ...importedModules.map(module => stats.clientStats.assetsByChunkName[module]),
+            stats.clientStats.assetsByChunkName.app,
           ])
-          template = replaceWebpackLinkRelExternals(template, [])
-          template = replaceWebpackInlinedCss(template, [])
-          template = replaceWebpackInitialData(template, {
+          _template = replaceWebpackLinkRelExternals(_template, [])
+          _template = replaceWebpackInlinedCss(_template, [])
+          _template = replaceWebpackInitialData(_template, {
             props: initialProps,
             state: store.getState()
           })
+          _template = replaceWebpackStats(_template, stats.clientStats.assetsByChunkName)
 
-          res.send(template)
+          res.send(_template)
         })
+    }).catch(e => {
+      console.error(e);
+      res.json(e.stack)
     })
   }
 }

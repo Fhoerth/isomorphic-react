@@ -8,16 +8,19 @@ import RouterLoader from './RouterLoader'
 import configureStore from '../store/configureStore'
 
 class BrowserApp extends React.Component {
-  constructor (props) {
-    super(props)
+  constructor (props, context) {
+    super(props, context)
 
     const initialProps = (window.__INITIAL_DATA__ && window.__INITIAL_DATA__.props) || {}
     const initialState = (window.__INITIAL_DATA__ && window.__INITIAL_DATA__.state) || {}
+    const webpackStats = (window.__STATS__) || {}
+
 
     const store = configureStore(initialState)
 
     this.store = store
     this.initialProps = initialProps
+    this.webpackStats = webpackStats
   }
 
   render () {
@@ -26,7 +29,7 @@ class BrowserApp extends React.Component {
         <BrowserRouter>
           <ConnectedRouter history={this.store.history} key='connected-router'>
             <div key='main'>
-              <RouterLoader store={this.store} initialProps={this.initialProps} routes={routes} />
+              <RouterLoader store={this.store} initialProps={this.initialProps} webpackStats={this.webpackStats} routes={routes} />
             </div>
           </ConnectedRouter>
         </BrowserRouter>

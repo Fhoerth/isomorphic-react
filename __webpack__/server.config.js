@@ -1,7 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
 const nodeExternals = require('webpack-node-externals')
-const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const htmlWebpackPlugin = new HtmlWebpackPlugin({
@@ -19,7 +18,7 @@ const htmlWebpackPlugin = new HtmlWebpackPlugin({
 const server = {
   name: 'server',
   target: 'node',
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   externals: [nodeExternals()],
   entry: [
     path.join(__dirname, '..', 'src', 'app', 'serverRenderer.js'),
@@ -34,15 +33,17 @@ const server = {
     rules: [{
       test: /\.(js|jsx)$/,
       use: {
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+        options: {
+          plugins: [
+            'dynamic-import-node'
+          ]
+        }
       }
     }]
   },
   plugins: [
     htmlWebpackPlugin,
-    new StatsWriterPlugin({
-      filename: 'stats.json' // Default
-    }),
     new webpack.BannerPlugin({
       banner: `require("source-map-support").install({
         hookRequire: true,

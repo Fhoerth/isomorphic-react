@@ -20,7 +20,9 @@ export class APIClient {
 
   fetchPing () {
     return this.client.get('/ping')
-      .then(result => result.data)
+      .then(result => {
+        return result.data
+      })
       .catch(this.handleError.bind(this))
   }
 
